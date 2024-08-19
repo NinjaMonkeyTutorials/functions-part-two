@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="GetAPinana" Id="{ecbf1520-e794-4baa-8bb2-9ca0885db9d3}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function returns a π-nana from a pineapple type and a banana type.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION GetAPinana :Pinana
+VAR_INPUT
+	(* type of pineapple to create a π-nana from it *)
+	pineapple	:PineappleType;
+	(* type of banana to create a π-nana from it *)
+	banana		:BananaType;
+END_VAR
+VAR CONSTANT
+	(* just a null pointer address *)
+	{attribute 'const_replaced'}
+	NULL 		:__XWORD := 0;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(* validate parameters *)
+RETURN((pineapple = PineappleType.NONE) OR (banana = BananaType.NONE));
+
+(* initialize π-nana *)
+GetAPinana.me := NULL;
+GetAPinana.pinanaType := (TO_UDINT(pineapple) + TO_UDINT(banana));
+GetAPinana.variety := TO_STRING(GetAPinana.pinanaType);
+GetAPinana.curve := CalculatePinanaCurvature(GetAPinana.pinanaType);
+]]></ST>
+    </Implementation>
+    <LineIds Name="GetAPinana">
+      <LineId Id="15" Count="6" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="Pinana" Id="{8222669e-ef33-4101-8bb1-4f30ac24f076}">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This type struct contains the properties of a π-nana.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+TYPE Pinana :
+STRUCT
+	(* pointer to itself for destruction of dynamically created Pinanas *)
+	me			:POINTER TO Pinana := 0;
+	(* type of π-nana *)
+	pinanaType	:PinanaType;
+	(* name of the π-nana variety *)
+	variety		:STRING;
+	(* curvature of π-nana ofcourse in radians *)
+	curve		:LREAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

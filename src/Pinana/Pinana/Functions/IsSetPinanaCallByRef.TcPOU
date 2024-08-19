@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="IsSetPinanaCallByRef" Id="{7f1b0438-a387-49de-a37f-4ff85520f641}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function sets the content of a π-nana by a pineapple type and a banana type.
+It returns true if it was successful and 
+false if it can't deterime a π-nana of type pineapple and banana.
+The function clears the old π-nana content in every case.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION IsSetPinanaCallByRef :BOOL
+VAR_INPUT
+	(* type of pineapple to get a π-nana from it *)
+	pineapple	:PineappleType;
+	(* type of banana to get a π-nana from it *)
+	banana		:BananaType;
+END_VAR
+VAR_IN_OUT
+	(* reference to a π-nana to set it*)
+	pinanaToSet 	:Pinana;	
+END_VAR
+VAR CONSTANT
+	(* null byte to clear the old π-nana content *) 
+	{attribute 'const_replaced'}
+	NULL 		:USINT := 0;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsSetPinanaCallByRef := FALSE;
+Tc2_System.MEMSET(ADR(pinanaToSet), NULL, SIZEOF(Pinana));
+pinanaToSet.variety := TO_STRING(PinanaType.NONE);
+(* validate parameters *)
+RETURN((pineapple = PineappleType.NONE) OR (banana = BananaType.NONE));
+
+(* set new π-nana content *)
+pinanaToSet.me := ADR(pinanaToSet);
+pinanaToSet.pinanaType := (TO_UDINT(pineapple) + TO_UDINT(banana));
+pinanaToSet.variety := TO_STRING(pinanaToSet.pinanaType);
+pinanaToSet.curve := CalculatePinanaCurvature(pinanaToSet.pinanaType);
+IsSetPinanaCallByRef := TRUE;
+]]></ST>
+    </Implementation>
+    <LineIds Name="IsSetPinanaCallByRef">
+      <LineId Id="148" Count="1" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="150" Count="6" />
+      <LineId Id="166" Count="1" />
+      <LineId Id="90" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

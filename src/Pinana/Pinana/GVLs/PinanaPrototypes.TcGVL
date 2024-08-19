@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="PinanaPrototypes" Id="{3c258783-8b4a-4ebd-9cfa-cd54c395a3dc}">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This is a lookup table for π-nanas.
+It's not a constant because the function GetAPinanaFromGlobal
+has a reference to π-nana as return value. A reference requires write access.
+
+The attribute hide is not used because we want show it online how to screw it. 
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+{attribute 'qualified_only'}
+VAR_GLOBAL
+	(* lookup table for π-nanas *)
+	pinanas :ARRAY[
+		SHR(PineappleType.ABACAXI,4)..SHR(PineappleType.PANARE,4)
+	] OF ARRAY[
+		BananaType.CAVENDISH..BananaType.LADY_FINGER
+	] OF Pinana := [
+		[
+			(pinanaType := PinanaType.ABADISH,		variety := TO_STRING(PinanaType.ABADISH),	curve := CalculatePinanaCurvature(PinanaType.ABADISH),		me := ADR(pinanas[1][1])),
+			(pinanaType := PinanaType.PLANABA,		variety := TO_STRING(PinanaType.PLANABA),	curve := CalculatePinanaCurvature(PinanaType.PLANABA),		me := ADR(pinanas[1][2])),
+			(pinanaType := PinanaType.ABANANA,		variety := TO_STRING(PinanaType.ABANANA),	curve := CalculatePinanaCurvature(PinanaType.ABANANA),		me := ADR(pinanas[1][3])),
+			(pinanaType := PinanaType.ABA_LADY,		variety := TO_STRING(PinanaType.ABA_LADY),	curve := CalculatePinanaCurvature(PinanaType.ABA_LADY),		me := ADR(pinanas[1][4]))
+		],[
+			(pinanaType := PinanaType.CAVEEN,		variety := TO_STRING(PinanaType.CAVEEN),	curve := CalculatePinanaCurvature(PinanaType.CAVEEN),		me := ADR(pinanas[2][1])),
+			(pinanaType := PinanaType.PLEEN,		variety := TO_STRING(PinanaType.PLEEN),		curve := CalculatePinanaCurvature(PinanaType.PLEEN),		me := ADR(pinanas[2][2])),
+			(pinanaType := PinanaType.RED_QUEEN,	variety := TO_STRING(PinanaType.RED_QUEEN),	curve := CalculatePinanaCurvature(PinanaType.RED_QUEEN),	me := ADR(pinanas[2][3])),
+			(pinanaType := PinanaType.LADY_QUEEN,	variety := TO_STRING(PinanaType.LADY_QUEEN),curve := CalculatePinanaCurvature(PinanaType.LADY_QUEEN),	me := ADR(pinanas[2][4]))
+		],[
+			(pinanaType := PinanaType.ILONACAVE,	variety := TO_STRING(PinanaType.ILONACAVE),	curve := CalculatePinanaCurvature(PinanaType.ILONACAVE),	me := ADR(pinanas[3][1])),
+			(pinanaType := PinanaType.PLAONA,		variety := TO_STRING(PinanaType.PLAONA),	curve := CalculatePinanaCurvature(PinanaType.PLAONA),		me := ADR(pinanas[3][2])),
+			(pinanaType := PinanaType.RED_LONA,		variety := TO_STRING(PinanaType.RED_LONA),	curve := CalculatePinanaCurvature(PinanaType.RED_LONA),		me := ADR(pinanas[3][3])),
+			(pinanaType := PinanaType.LADY_LONA,	variety := TO_STRING(PinanaType.LADY_LONA),	curve := CalculatePinanaCurvature(PinanaType.LADY_LONA),	me := ADR(pinanas[3][4]))
+		],[
+			(pinanaType := PinanaType.PANDISH,		variety := TO_STRING(PinanaType.PANDISH),	curve := CalculatePinanaCurvature(PinanaType.PANDISH),		me := ADR(pinanas[4][1])),
+			(pinanaType := PinanaType.PLANPAN,		variety := TO_STRING(PinanaType.PLANPAN),	curve := CalculatePinanaCurvature(PinanaType.PLANPAN),		me := ADR(pinanas[4][2])),
+			(pinanaType := PinanaType.PANANA,		variety := TO_STRING(PinanaType.PANANA),	curve := CalculatePinanaCurvature(PinanaType.PANANA),		me := ADR(pinanas[4][3])),
+			(pinanaType := PinanaType.PAN_FINGER,	variety := TO_STRING(PinanaType.PAN_FINGER),curve := CalculatePinanaCurvature(PinanaType.PAN_FINGER),	me := ADR(pinanas[4][4]))
+		]
+	];
+END_VAR
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

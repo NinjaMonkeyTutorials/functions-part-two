@@ -1,0 +1,59 @@
+#---------------------------------------------------------
+#												common
+#---------------------------------------------------------
+
+# ignore entire 'IM' directory
+[Ii][Mm]/
+
+# ignore any temporary directory
+[tT][mM][pP]/
+[tT][eE][mM][pP]/
+
+# ignore any *.backup directory
+*.[Bb][Aa][cC][Kk][uU][Pp]/
+
+# ignore any log directory
+[lL][oO][gG]/
+[lL][oO][gG][sS]/
+
+#ignore archive folders
+[Aa][Rr][Cc][Hh][Ii][Vv][Ee]/
+[Aa][Rr][Cc][Hh][Ii][Vv]/
+
+# ignore backup files
+*.bak
+
+# ignore enterprise architect ldb
+*.ldb
+
+# ignore any file starting with a tilde
+~*.*
+
+# ignore any file with file extension tmp or temp
+*.[tT][mM][pP]
+*.[tT][eE][mM][pP]
+
+# ignore info files
+*.info
+
+# ignore log files
+*.log
+
+#---------------------------------------------------------
+#					Beckhoff specific
+#---------------------------------------------------------
+
+Release/
+x64Debug/
+x64Release/
+x86Debug/
+x86Release/
+_Boot/
+_CompileInfo/
+_output/
+
+*.~u
+*.suo
+*/TrialLicense.tclrs
+
+

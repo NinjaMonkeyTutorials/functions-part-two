@@ -1,0 +1,457 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{6290bd06-f6ca-4895-9345-0186732d5bfa}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This program is attached to the main plc task.
+This project was created for the YouTube channel https://www.youtube.com/@ninjamonkeystutorials
+created. It is intended to show why references as return values for functions are dangerous.
+You've a couple of flags to control the data flow... 
+It can be a lot of fun to mess with TwinCAT, if it's not a real world plc. So have fun with it.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+PROGRAM MAIN
+VAR
+	//set it in online mode to skip all methods
+	skipAll				:BOOL := FALSE;
+	//set it in online mode to skip no method, but skipAll must be unset
+	skipNone			:BOOL := FALSE;
+	//unset it in online mode if you want to step through messWithGlobalPinanas, but skipAll must be unset
+	skipMessWithGlobal	:BOOL := TRUE;
+	//unset it in online mode if you want to step through messWithNewPinanas, but skipAll must be unset
+	skipMessWithNew		:BOOL := TRUE;
+	//unset it in online mode if you want to step through messWithStackPinanas, but skipAll must be unset
+	skipMessWithStack	:BOOL := TRUE;
+	//unset it in online mode if you want to step through withCallByRef, but skipAll must be unset
+	skipCallByRef		:BOOL := TRUE;
+	//unset it in online mode if you want to step through withACommonReturn, but skipAll must be unset
+	skipCommon			:BOOL := TRUE;
+	//reference to our π-nana from stack
+	stackPinana			:REFERENCE TO Pinana;
+	//reference to our π-nana from the global variable list
+	globalPinana		:REFERENCE TO Pinana;
+	//reference to our new π-nana
+	newPinana			:REFERENCE TO Pinana;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[messWithStackPinanas(isSkipIt(skipMessWithStack));
+messWithGlobalPinanas(isSkipIt(skipMessWithGlobal));
+messWithNewPinanas(isSkipIt(skipMessWithNew));
+withCallByRef(isSkipIt(skipCallByRef));
+withACommonReturn(isSkipIt(skipCommon));
+]]></ST>
+    </Implementation>
+    <Method Name="isSkipIt" Id="{e5cad311-f763-441d-8c40-91b103520f7f}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+This method returns TRUE if a skip is required.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD isSkipIt :BOOL
+VAR_INPUT
+	(* specific skipping flag to check *)
+	skip	:BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[isSkipIt := skipAll;
+RETURN(skipAll);
+isSkipIt := (NOT skipNone);
+RETURN(skipNone);
+isSkipIt := skip;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="messWithGlobalPinanas" Id="{b8b82b2d-b8ad-4e72-a7fc-ec4895040b7f}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+This method exploids the reference return value of the function GetAPinanaFromGlobal
+Use break points to check it out by your self.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD messWithGlobalPinanas
+VAR_INPUT
+	(* flag to skip this method *)
+	skip	:BOOL;
+END_VAR
+VAR
+	(* a π-nana type to fetch it from GetAPinanaFromGlobal *)
+	typeOfPinana	:PinanaType;
+	(* a π-nana to fetch it from GetAPinanaFromGlobal *)
+	pinana			:Pinana;
+	(* π-nana varity to fetch it from GetAPinanaFromGlobal *)
+	name			:STRING;
+	(* set it true to get exception from using an invalid reference *)
+	skipException	:BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RETURN(skip);
+//every thing is fine here
+pinana := GetAPinanaFromGlobal(PineappleType.QUEEN, BananaType.RED_BANANA);
+name := pinana.variety; //RED_QUEEN
+name := GetAPinanaFromGlobal(PineappleType.QUEEN, BananaType.LADY_FINGER).variety; //LADY_QUEEN
+
+
+globalPinana REF= GetAPinanaFromGlobal(PineappleType.QUEEN, BananaType.RED_BANANA);
+RETURN(NOT __ISVALIDREF(globalPinana));
+name := globalPinana.variety; //RED_QUEEN
+name := GetAPinanaFromGlobal(PineappleType.QUEEN, BananaType.RED_BANANA).variety; //RED_QUEEN
+
+globalPinana.variety := 'Gold Kiwi'; // here we overwrite the global variable, and this is hard to find
+name := GetAPinanaFromGlobal(PineappleType.QUEEN, BananaType.RED_BANANA).variety; //RED_QUEEN is expected but we get Gold Kiwi
+globalPinana.variety := TO_STRING(pinana.pinanaType);// here we overwrite the global variable again to the old value
+
+//unset skipException if you want a exception
+JMP(skipException) END;
+typeOfPinana := GetAPinanaFromGlobal(PineappleType.NONE, BananaType.NONE).pinanaType;
+
+END:
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="messWithNewPinanas" Id="{5b0fce05-9d8c-4e60-8d82-6e1cc188404f}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+This method exploids the reference return value of the function GetANewPinana
+Use break points to check it out by your self.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD messWithNewPinanas
+VAR_INPUT
+	(* flag to skip this method *)
+	skip	:BOOL;
+END_VAR
+VAR
+	(* a π-nana type to fetch it from GetANewPinana *)
+	typeOfPinana	:PinanaType;
+	(* a π-nana to fetch it from GetANewPinana *)
+	pinana			:Pinana;
+	(* π-nana varity to fetch it from GetANewPinana *)
+	name			:STRING;
+	(* set it true to get exception from using an invalid reference *)
+	skipException	:BOOL := TRUE;
+	(* byte pointer to free the new π-nana again *)
+	void			:POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RETURN(skip);
+//here is everthing fine
+newPinana REF= GetANewPinana(PineappleType.QUEEN, BananaType.RED_BANANA);
+RETURN(NOT __ISVALIDREF(newPinana));
+name := newPinana.variety; //RED_QUEEN
+//clean up again
+void := newPinana.me;
+__DELETE(void);
+//normaly we should delete the reference again
+//newPinana REF= 0;
+
+pinana := GetANewPinana(PineappleType.QUEEN, BananaType.LADY_FINGER);
+name := pinana.variety; //LADY_QUEEN
+//clean up again
+void := pinana.me;
+__DELETE(void);
+pinana.me := 0;
+pinana.curve := 0;
+pinana.pinanaType := PinanaType.NONE;
+pinana.variety := TO_STRING(PinanaType.NONE);
+
+//how to get a memory leak because we are not able to clean up the memory anymore
+name := GetANewPinana(PineappleType.QUEEN, BananaType.RED_BANANA).variety; //RED_QUEEN
+
+//unset skipException if you want a exception
+JMP(skipException) END;
+typeOfPinana := GetAPinanaFromGlobal(PineappleType.NONE, BananaType.NONE).pinanaType;
+
+END:
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="messWithStackPinanas" Id="{551609a4-a4e0-4a61-b441-71328d3ef09b}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+This method exploids the reference return value of the function GetAPinanaFromStack
+Use break points to check it out by your self.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD messWithStackPinanas
+VAR_INPUT
+	(* flag to skip this method *)
+	skip	:BOOL;
+END_VAR
+VAR
+	(* a π-nana type to fetch it from GetAPinanaFromStack *)
+	typeOfPinana	:PinanaType;
+	(* a π-nana to fetch it from GetAPinanaFromStack *)
+	pinana			:Pinana;
+	(* π-nana varity to fetch it from GetAPinanaFromStack *)
+	name			:STRING;
+	(* set it true to get exception from using an invalid reference *)
+	skipException	:BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RETURN(skip);
+//every thing is fine here
+pinana := GetAPinanaFromStack(PineappleType.QUEEN, BananaType.RED_BANANA);
+name := pinana.variety; //RED_QUEEN
+name := GetAPinanaFromStack(PineappleType.QUEEN, BananaType.LADY_FINGER).variety; //LADY_QUEEN
+
+//we create now a valid reference but it points to the stack
+stackPinana REF= GetAPinanaFromStack(PineappleType.QUEEN, BananaType.RED_BANANA);
+RETURN(NOT __ISVALIDREF(stackPinana));
+name := stackPinana.variety; //RED_QUEEN is expected
+name := GetAPinanaFromStack(PineappleType.QUEEN, BananaType.RED_BANANA).variety; //RED_QUEEN
+
+//dangerous: here we try to overwrite the stack memory. To see the problem run it more than once
+//stackPinana.variety := 'Gold Kiwi';
+//dangerous: here we overwrite the stack memory
+//stackPinana.me^.variety := 'banana phone';
+
+//unset skipException if you want a exception
+JMP(skipException) END;
+typeOfPinana := GetAPinanaFromStack(PineappleType.NONE, BananaType.NONE).pinanaType;
+
+END:
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="withACommonReturn" Id="{d51260ce-c2e4-420b-afac-e62be9ad9fb7}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+This method is just to show, there is nothing to exploid with a common return
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD withACommonReturn
+VAR_INPUT
+	(* flag to skip this method *)
+	skip	:BOOL;
+END_VAR
+VAR
+	(* a π-nana to fetch it from GetAPinana *)
+	pinana			:Pinana;
+	(* π-nana varity to fetch it from GetAPinana *)
+	name			:STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RETURN(skip);
+//every thing is fine here
+pinana := GetAPinana(PineappleType.QUEEN, BananaType.RED_BANANA);
+name := pinana.variety; //RED_QUEEN
+pinana := GetAPinana(PineappleType.NONE, BananaType.NONE);
+name := pinana.variety; //NONE
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="withCallByRef" Id="{7411db54-905a-4063-b99c-1e7873cbe10a}">
+      <Declaration><![CDATA[(*
+
+short summary
+=============
+his method is just to show, it's safer with a call by reference
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+METHOD withCallByRef
+VAR_INPUT
+	(* flag to skip this method *)
+	skip	:BOOL;
+END_VAR
+VAR
+	(* a π-nana to fetch it from IsSetPinanaCallByRef *)
+	pinana			:Pinana;
+	(* π-nana varity to fetch it from IsSetPinanaCallByRef *)
+	name			:STRING;
+	(* π-nana address to show the equality *)
+	{attribute 'displaymode':='hex'}
+	pinanaAddress	:__UXINT;
+	(* π-nana address to show the equality *)
+	{attribute 'displaymode':='hex'}
+	meAddress		:__UXINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[RETURN(skip);
+//every thing is fine
+IsSetPinanaCallByRef(PineappleType.QUEEN, BananaType.RED_BANANA, pinana);
+name := pinana.variety; //RED_QUEEN
+
+//check the addresses
+pinanaAddress := ADR(pinana);
+meAddress := pinana.me;
+IF (pinanaAddress = meAddress) THEN
+	name := 'Addresses are equal';
+END_IF
+
+(*
+it's impossible to run code like below 
+because it's not compileable 
+so you can't throw an exception
+
+IsSetPinanaCallByRef(
+	pineapple := PineappleType.QUEEN,
+	banana := BananaType.RED_BANANA,
+	pinana := 0
+);
+*)
+
+IF (NOT IsSetPinanaCallByRef(PineappleType.NONE, BananaType.NONE, pinana)) THEN
+	name := pinana.variety;
+	;//Error handling here
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="MAIN">
+      <LineId Id="74" Count="3" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="80" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.isSkipIt">
+      <LineId Id="19" Count="4" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.messWithGlobalPinanas">
+      <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.messWithNewPinanas">
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="3" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="36" Count="2" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="49" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.messWithStackPinanas">
+      <LineId Id="62" Count="21" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.withACommonReturn">
+      <LineId Id="68" Count="3" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.withCallByRef">
+      <LineId Id="68" Count="3" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="90" Count="3" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="82" Count="1" />
+      <LineId Id="74" Count="6" />
+      <LineId Id="84" Count="1" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

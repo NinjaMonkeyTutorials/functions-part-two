@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="PineappleType" Id="{5f494e9e-4fb1-46aa-a36b-3f6e0519bede}">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This enumeration represents the pineapple varieties from which π-nana are to be produced.
+If the type is extended, make sure that only the second nibble is used.
+Only 15 pineapple types can be mapped, namely from 16#10 to 16#F0.
+The software generates the π-nana type by adding the pineapple type and the banana type.
+So that everything remains unique, the banana variety is given the least significant nibble from 16#01 to 16#0F.
+
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE PineappleType :(
+	(* it's not a pineapple *)
+	NONE		:= 16#00,
+	(* it's an abacaxi pineapple *)
+	ABACAXI		:= 16#10,
+	(* it's a queen pineapple *)
+	QUEEN		:= 16#20,
+	(* it's a mordilona pineapple *)
+	MORDILONA	:= 16#30,
+	(* it's a panare pineapple *)
+	PANARE		:= 16#40
+)UDINT := NONE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

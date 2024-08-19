@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="GetAPinanaFromStack" Id="{0f38c109-bc72-45fb-a285-cbfa8b3312cf}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function returns a reference to a π-nana.
+The π-nana is created by a pineapple type and a banana type.
+The reference points to a π-nana on the stack memory.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION GetAPinanaFromStack :REFERENCE TO Pinana
+VAR_INPUT
+	(* type of pineapple to create a π-nana from it *)
+	pineapple	:PineappleType;
+	(* type of banana to create a π-nana from it *)
+	banana		:BananaType;
+END_VAR
+VAR
+	(* stack π-nana to refer on it *)
+	stackPinana :Pinana;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[GetAPinanaFromStack REF= 0;
+(* validate parameters *)
+RETURN((pineapple = PineappleType.NONE) OR (banana = BananaType.NONE));
+
+(* initialize stack π-nana *)
+stackPinana.me := ADR(stackPinana);
+stackPinana.pinanaType := (TO_UDINT(pineapple) + TO_UDINT(banana));
+stackPinana.variety := TO_STRING(stackPinana.pinanaType);
+stackPinana.curve := CalculatePinanaCurvature(stackPinana.pinanaType);
+GetAPinanaFromStack REF= stackPinana;
+]]></ST>
+    </Implementation>
+    <LineIds Name="GetAPinanaFromStack">
+      <LineId Id="51" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="47" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

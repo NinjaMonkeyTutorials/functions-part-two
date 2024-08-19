@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="PinanaType" Id="{b618f7af-d164-460e-b548-7b136dd75baf}">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This enumeration represents the π-nana types.
+The type of π-nana is determined by the simple formula
+π-nana type := pineapple type + banana type 
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+{attribute 'qualified_only'}
+{attribute 'to_string'}
+TYPE PinanaType :
+(
+	(* it's not a pinana *)
+	NONE		:= 16#00,
+	(* PineappleType.ABACAXI + BananaType.CAVENDISH *)
+	ABADISH 	:= 16#11,
+	(* PineappleType.ABACAXI + BananaType.PLANTAIN *)
+	PLANABA		:= 16#12,
+	(* PineappleType.ABACAXI + BananaType.RED_BANANA *)
+	ABANANA		:= 16#13,
+	(* PineappleType.ABACAXI + BananaType.LADY_FINGER *)
+	ABA_LADY	:= 16#14,
+	(* PineappleType.QUEEN + BananaType.CAVENDISH *)
+	CAVEEN	 	:= 16#21,
+	(* PineappleType.QUEEN + BananaType.PLANTAIN *)
+	PLEEN		:= 16#22,
+	(* PineappleType.QUEEN + BananaType.RED_BANANA *)
+	RED_QUEEN	:= 16#23,
+	(* PineappleType.QUEEN + BananaType.LADY_FINGER *)
+	LADY_QUEEN	:= 16#24,
+	(* PineappleType.MORDILONA + BananaType.CAVENDISH *)
+	ILONACAVE 	:= 16#31,
+	(* PineappleType.MORDILONA + BananaType.PLANTAIN *)
+	PLAONA		:= 16#32,
+	(* PineappleType.MORDILONA + BananaType.RED_BANANA *)
+	RED_LONA	:= 16#33,
+	(* PineappleType.MORDILONA + BananaType.LADY_FINGER *)
+	LADY_LONA	:= 16#34,
+	(* PineappleType.PANARE + BananaType.CAVENDISH *)
+	PANDISH 	:= 16#41,
+	(* PineappleType.PANARE + BananaType.PLANTAIN *)
+	PLANPAN		:= 16#42,
+	(* PineappleType.PANARE + BananaType.RED_BANANA *)
+	PANANA		:= 16#43,
+	(* PineappleType.PANARE + BananaType.LADY_FINGER *)
+	PAN_FINGER	:= 16#44	
+)UDINT := NONE;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

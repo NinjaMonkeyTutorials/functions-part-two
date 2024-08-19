@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="GetANewPinana" Id="{7374e9de-ee74-4c27-8034-53fcbb6e7d49}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function dynamically allocates memory and thus creates a new π-nana from a pineapple type and a banana type.
+The pointer pinana.me specifies the address of the new π-nana to free it again later.
+The π-nana allocates the memory as a byte, as π-nanas do not have the enable dynamic creation attribute.
+It returns a reference to the new π-nana.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION GetANewPinana :REFERENCE TO Pinana
+VAR_INPUT
+	(* type of pineapple to create a π-nana from it *)
+	pineapple	:PineappleType;
+	(* type of banana to create a π-nana from it *)
+	banana		:BananaType;
+END_VAR
+VAR
+	(* byte pointer to allocate the memory for the new π-nana *)
+	bytePointer		:POINTER TO BYTE;
+	(* pointer to the new created π-nana *) 
+	pinanaPointer	:POINTER TO Pinana;
+END_VAR
+VAR CONSTANT
+	(* just a null pointer address *)
+	{attribute 'const_replaced'}
+	NULL 		:__XWORD := 0;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[GetANewPinana REF= 0;
+(* validate parameters *)
+RETURN((pineapple = PineappleType.NONE) OR (banana = BananaType.NONE));
+(* allocate memory for the new π-nana *)
+bytePointer := __NEW(BYTE, SIZEOF(Pinana));
+RETURN(bytePointer = NULL);
+(* initialize new π-nana *)
+pinanaPointer := bytePointer;
+pinanaPointer^.me := bytePointer;
+pinanaPointer^.pinanaType := (TO_UDINT(pineapple) + TO_UDINT(banana));
+pinanaPointer^.variety := TO_STRING(pinanaPointer^.pinanaType);
+pinanaPointer^.curve := CalculatePinanaCurvature(pinanaPointer^.pinanaType);
+GetANewPinana REF= pinanaPointer^;
+]]></ST>
+    </Implementation>
+    <LineIds Name="GetANewPinana">
+      <LineId Id="132" Count="12" />
+      <LineId Id="44" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

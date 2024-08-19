@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="CalculatePinanaCurvature" Id="{e0580250-d7ea-4f94-a313-44c6aa6f47a8}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function returns the curvature of a π-nana.
+It uses the function block Tc2_System.DRAND and the π-nana type is used as the seed.
+As the function block is on the stack, Tc2_System.DRAND should return the same value for each π-nana type.
+A lookup table would have been a better choice, but less fancy.
+The curvature of the π-nana is not specified in degrees but in radians.
+
+legal notes
+=================
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION CalculatePinanaCurvature :LREAL
+VAR_INPUT
+	(* type of the π-nana to calculate the curvature for it *)
+	typeOfPinana :PinanaType;
+END_VAR
+VAR
+	(* random number generator, it generates no random numbers because it's on the stack *)
+	rand		:Tc2_System.DRAND;
+END_VAR
+VAR CONSTANT
+	(* an approximation of the circle number pi *)
+	PI	 		:REAL := 3.14159265359;
+	(* just 180 degree *)
+	SEMICIRCLE	:REAL := 180.0;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CalculatePinanaCurvature := 0.0;
+RETURN(typeOfPinana = PinanaType.NONE);
+rand(Seed := TO_INT(typeOfPinana));
+CalculatePinanaCurvature := (
+	(
+		TO_REAL(
+			TO_ULINT(
+				TO_REAL(rand.Num) * 1.0E+6
+			) MOD 30
+		) + TO_REAL(rand.Num)
+	) * (PI/SEMICIRCLE)
+);
+]]></ST>
+    </Implementation>
+    <LineIds Name="CalculatePinanaCurvature">
+      <LineId Id="113" Count="11" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

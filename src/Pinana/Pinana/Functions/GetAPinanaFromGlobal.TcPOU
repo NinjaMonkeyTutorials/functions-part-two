@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="GetAPinanaFromGlobal" Id="{75306231-4071-41fd-bead-733371a4f3a6}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+
+short summary
+=============
+This function returns a reference to a π-nana.
+The reference is created by a pineapple type and a banana type.
+The reference points to a π-nana of the global lookup table PinanaPrototypes.pinanas.
+
+legal notes
+===========
+SPDX-FileCopyrightText: © 2024 ekvip automation GmbH <info@ekvip.de>
+SPDX-License-Identifier: Apache-2.0
+For details check: Apache-2.0_
+
+.. _Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
+
+*)
+FUNCTION GetAPinanaFromGlobal :REFERENCE TO Pinana
+VAR_INPUT
+	(* type of pineapple to create a π-nana from it *)
+	pineapple	:PineappleType;
+	(* type of banana to create a π-nana from it *)
+	banana		:BananaType;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[GetAPinanaFromGlobal REF= 0;
+RETURN((pineapple = PineappleType.NONE) OR (banana = BananaType.NONE));
+GetAPinanaFromGlobal REF= PinanaPrototypes.pinanas[SHR(pineapple,4)][banana];
+]]></ST>
+    </Implementation>
+    <LineIds Name="GetAPinanaFromGlobal">
+      <LineId Id="7" Count="0" />
+      <LineId Id="17" Count="2" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,65 @@
+#beckhoff and VisiWin7
+*.filters -merge
+*.vcxproj -merge
+*.vsmdi -merge
+*.sln -merge
+*.mdb -merge
+*.xml -merge
+*.csproj -merge
+*.csproj.user -merge
+*.xaml -merge
+*.config -merge
+*.tsproj -merge
+*.plcproj -merge
+*.xti -merge
+*.TcTTO -merge
+*.TcPOU -merge
+*.TcDUT -merge
+*.TcGVL -merge
+*.TcVis -merge
+*.TcVMO -merge
+*.TcGTLO -merge
+*.vw7 -merge
+
+# add system files to git lfs
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.exe filter=lfs diff=lfs merge=lfs -text
+
+#add documents to git lfs
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.docx filter=lfs diff=lfs merge=lfs -text
+*.xlsx filter=lfs diff=lfs merge=lfs -text
+*.pptx filter=lfs diff=lfs merge=lfs -text
+
+#add enterpise architect to git lfs
+*.eap filter=lfs diff=lfs merge=lfs -text
+*.eapx filter=lfs diff=lfs merge=lfs -text
+
+#add archive files to git lfs
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.7z filter=lfs diff=lfs merge=lfs -text
+*.rar filter=lfs diff=lfs merge=lfs -text
+*.tnzip filter=lfs diff=lfs merge=lfs -text 
+
+#add beckhoff library files to git lfs
+*.library filter=lfs diff=lfs merge=lfs -text
+*compiled-library filter=lfs diff=lfs merge=lfs -text
+
+# add siemens files to git lfs
+*.idx filter=lfs diff=lfs merge=lfs -text
+*.plf filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text
+*.zap13 filter=lfs diff=lfs merge=lfs -text
+*.zap14 filter=lfs diff=lfs merge=lfs -text
+*.zap15 filter=lfs diff=lfs merge=lfs -text
+*.zap16 filter=lfs diff=lfs merge=lfs -text
+*.ap13 filter=lfs diff=lfs merge=lfs -text
+*.ap14 filter=lfs diff=lfs merge=lfs -text
+*.ap15 filter=lfs diff=lfs merge=lfs -text
+*.ap16 filter=lfs diff=lfs merge=lfs -text
+
+#add image files to git lfs
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+
